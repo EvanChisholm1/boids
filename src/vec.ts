@@ -37,3 +37,15 @@ export function normalizeVec(vec: Vec2d): Vec2d {
 export function subVecs(a: Vec2d, b: Vec2d): Vec2d {
     return addVecs(a, scaleVec(b, -1));
 }
+
+export function absVec({ x, y }: Vec2d): Vec2d {
+    return { x: Math.abs(x), y: Math.abs(y) };
+}
+
+export function getDistance(a: Vec2d, b: Vec2d): number {
+    return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+}
+
+export function sumVecs(vecs: Vec2d[]): Vec2d {
+    return vecs.reduce((acc, x) => addVecs(acc, x), { x: 0, y: 0 });
+}
