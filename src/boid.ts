@@ -67,9 +67,12 @@ function cohesion(boid: Boid, boids: Boid[], perceptionRadius: number): Vec2d {
     return steering;
 }
 
-const SEPARTATION_WEIGHT = 1;
+// const SEPARTATION_WEIGHT = 10;
+// const ALIGNMENT_WEIGHT = 3;
+// const COHESION_WEIGHT = 0.3;
+const SEPARTATION_WEIGHT = 1.5;
 const ALIGNMENT_WEIGHT = 1;
-const COHESION_WEIGHT = 1;
+const COHESION_WEIGHT = 0.7;
 
 const SPEED = 1;
 
@@ -94,19 +97,33 @@ class Boid {
 
     update(others: Boid[]) {
         const minDist = 25;
-        const perceptionRadius = 100;
+        const perceptionRadius = 50;
 
         const separationForce = separation(this, others, minDist);
         const alignmentForce = alignment(this, others, perceptionRadius);
         const cohesionForce = cohesion(this, others, perceptionRadius);
 
-        const acceleration = sumVecs([
-            scaleVec(separationForce, SEPARTATION_WEIGHT),
-            scaleVec(alignmentForce, ALIGNMENT_WEIGHT),
-            scaleVec(cohesionForce, COHESION_WEIGHT),
-        ]);
+        const acceleration = scaleVec(
+            normalizeVec(
+                sumVecs([
+                    scaleVec(separationForce, SEPARTATION_WEIGHT),
+                    scaleVec(alignmentForce, ALIGNMENT_WEIGHT),
+                    scaleVec(cohesionForce, COHESION_WEIGHT),
+                ])
+            ),
+            0.1
+        );
 
-        this.vel = normalizeVec(addVecs(this.vel, acceleration));
+        // add random noise so boids don't get stuck
+        const noise: Vec2d = scaleVec(
+            {
+                x: Math.random() * 2 - 1,
+                y: Math.random() * 2 - 1,
+            },
+            0.1
+        );
+
+        this.vel = normalizeVec(sumVecs([this.vel, acceleration, noise]));
         this.pos = addVecs(this.pos, scaleVec(this.vel, SPEED));
     }
 }

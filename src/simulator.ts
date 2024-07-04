@@ -22,7 +22,7 @@ export class Simulator {
             // render the boid
             ctx.beginPath();
             ctx.arc(boid.pos.x, boid.pos.y, 5, 0, 2 * Math.PI);
-            ctx.fillStyle = "black";
+            ctx.fillStyle = "white";
             ctx.fill();
             ctx.closePath();
         }
